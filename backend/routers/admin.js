@@ -1,0 +1,12 @@
+const express = require('express')
+const router = express.Router()
+const adminController = require('../controllers/admin-controller')
+
+router.post('/login',adminController.login)
+router.post('/register',adminController.register)
+router.post('/verify-account',adminController.verifyAccount)
+router.post('/add-post',adminController.addPost)
+router.post('/update-post',adminController.updatePost)
+router.delete('/delete-post',adminController.deletePost)
+
+module.exports = router
