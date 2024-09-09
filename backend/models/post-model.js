@@ -1,17 +1,14 @@
 const mongoose = require("mongoose");
 
-const contactSchema = new mongoose.Schema({
-  name: { type: String, require: true },
+const postSchema = new mongoose.Schema({
   email: { type: String, require: true },
-  password: { type: String, require: true },
-  phone: { type: String, require: true },
-  adress: { type: String, required: true },
-  type: { type: String, required: true, default: "admin" },
-  isVerified: { type: Boolean, default: false },
-  otp: { type: String, required: true },
-  token: { type: String, required: true },
-});
+  title: { type: String },
+  description: { type: String },
+  score: { type: String, require: true },
+},
+{timestamps:true}
+);
 
-const Contact = new mongoose.model('Contact',contactSchema)
+const Post = new mongoose.model("Post", postSchema);
 
-module.exports = Contact
+module.exports = Post;

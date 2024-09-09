@@ -8,7 +8,7 @@ const adminSchema = new mongoose.Schema({
   address: { type: String, required: true },
   type: { type: String, required: true, default: "admin" },
   isVerified: { type: Boolean, default: false },
-  otp: { type: String, required: true },
+  otp: { type: String },
   token: { type: String, required: true },
 });
 
