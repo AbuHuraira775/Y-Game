@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer')
 require('dotenv').config();
 
-const sendEmail = async (userEmail, message) => {
+const sendOTP = async (userEmail, message) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -15,13 +15,13 @@ const sendEmail = async (userEmail, message) => {
         to: userEmail,
         subject: "Verification Code",
         text: 'Hello world!',
-        html: `<p>This is the verification code from the Game Score Posting</p>
-                <h1 style="color: blue">${message}</h1>`
+        html: `<h3>This is the verification code from the Game Score Posting</h3>
+                <h1 style="color: blue">${message}</h1>
+                <h3>Use this code to verify your account and then you will be able to post, update and delete your game scores</h3>`
     }
 
     try {
         await transporter.sendMail(mailOption)
-        console.log("Verifaication email sent")
     }
     catch (error) {
         console.log("Email sending failed with an error " + error)
@@ -30,4 +30,4 @@ const sendEmail = async (userEmail, message) => {
 }
 
 
-module.exports = sendEmail
+module.exports = sendOTP

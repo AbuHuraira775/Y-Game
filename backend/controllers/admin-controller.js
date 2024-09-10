@@ -1,24 +1,49 @@
-const { ReturnDocument } = require("mongodb");
 const Admin = require("../models/admin-model");
 const comaprePassword = require("../utils/compae-password");
 const createToken = require("../utils/create-token");
 const generate_OTP = require("../utils/generate-otp");
 const hashPassword = require("../utils/hash-password");
 const Post = require("../models/post-model");
+const sendContact = require("../utils/send-contact");
+const sendVerification = require("../utils/send-verification");
+const sendOTP = require("../utils/send-mail");
 
+// GET /api/admin/send-otp
+const sendOtp = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const existEmail = await Admin.findOne({ email });
+    if(!existEmail){
+      return res.status(400).json({state:false, msg: `Admin does not exist`})
+    } 
+    else{
+      const otp = generate_OTP();
+      existEmail.otp = otp;
+      sendOTP(email, otp);
+      await existEmail.save();
+      return res.status(200).json({state:true, msg: `Otp is sent to your email`,data: existEmail})
+    }
+  }
+  catch (err) {
+    console.log("API Error due to : ", err);
+  }
+}
+
+// POST /api/admin/register
 const register = async (req, res) => {
   try {
     const { name, email, password, phone, address, type } = req.body;
-    const existEmail = await Admin.findOne({ email });
+    const existEmail = await Admin.findOne();
 
     if (existEmail) {
-      return res.json({ message: "Email already exists" });
+      return res.status(400).json({ state:false, message: "You are not able to create the admin account. Admin already exits" });
     } 
     else {
       const otp = generate_OTP();
       const token = await createToken(email, type);
       const hased_password = await hashPassword(password);
 
+      sendOTP(email, otp);
       await Admin.create({
         name,
         email,
@@ -29,8 +54,10 @@ const register = async (req, res) => {
         otp,
         token,
       });
-      return res.json({
+      return res.status(200).json({
+        state:true,
         message: `You are registered successfully. Please verify your account.`,
+        data: { name, email, phone, address, type, otp, token }
       });
     }
   } 
@@ -56,7 +83,6 @@ const login = async (req, res) => {
       if (result) {
         // create the token
         const type = await existEmail.type;
-        const token = await createToken(email, type);
         await existEmail.save()
 
         return res.status(200).json({
@@ -92,9 +118,9 @@ const verifyAccount = async(req, res) => {
           else{
 
             existEmail.isVerified = true
-            
             // update MongoDB 
             await existEmail.save();
+            sendVerification(existEmail.email, `verified`);
             return res.status(200).json({ state: true, msg: `You are verified successfully` })
           }
         }
@@ -199,6 +225,7 @@ const deletePost = async(req, res) => {
 };
 
 module.exports = {
+  sendOtp,
   register,
   login,
   verifyAccount,

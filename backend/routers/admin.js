@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const adminController = require('../controllers/admin-controller')
 
+router.get('/otp-send',adminController.sendOtp)
 router.post('/login',adminController.login)
 router.post('/register',adminController.register)
 router.post('/verify-account',adminController.verifyAccount)

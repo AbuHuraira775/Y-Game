@@ -3,9 +3,8 @@ const jwt = require('jsonwebtoken')
 const verifyToken = async (req, res, next) => {
 
     const token = req.header('Authorization')
-    // const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiY3Vzc3RvbWVyIiwiZW1haWwiOiJodXJhaXJhMUBnbWFpbC5jb20iLCJpYXQiOjE3MjExMzI1NjksImV4cCI6MTcyMTk5NjU2OX0.T5wf4JPOg0jdlCPMKqPmatx3awoKyexngpAMC0dovnQ"
     if (!token) {
-        return res.status(401).send({ message: 'Access denied. No token provided.' });
+        return res.status(401).send({ state:false, message: 'Access denied. No token provided.' });
     }
     else {
 
@@ -15,7 +14,7 @@ const verifyToken = async (req, res, next) => {
             next()
         }
         catch (error) {
-            res.status(400).send({ message: 'Invalid token.' });
+            res.status(400).send({ state:false, message: 'Invalid token.' });
         }
     }
 }

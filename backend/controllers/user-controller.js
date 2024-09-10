@@ -1,4 +1,6 @@
+const Contact = require("../models/contact-model");
 const Post = require("../models/post-model");
+const sendContact = require("../utils/send-contact");
 
 const home = async (req, res) => {
   try {
@@ -17,21 +19,23 @@ const home = async (req, res) => {
   }
 };
 
-const contact = (req, res) => {
+const contact = async(req, res) => {
   try {
     const { name, email, message } = req.body;
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    if (!name && !email && !message) {
+    if (!name || !email || !message) {
       return res.status(422).json({ error: "Please fill the contact form" });
     } else {
       if (!emailRegex.test(email)) {
         return res.status(422).json({ error: "Invalid Email" });
       } else {
+        await Contact.create({name, email, message});
+        sendContact(name,email, message);
         return res
           .status(200)
           .json({
             state: true,
-            message: "Your contact has been sent successfully",
+            message: "Your response has been sent successfully",
             date: req.body,
           });
       }
