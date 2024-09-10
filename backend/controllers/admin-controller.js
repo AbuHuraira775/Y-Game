@@ -4,7 +4,14 @@ const register = async (req, res) => {
   try {
     const { name, email, password, phone, address,type,otp,token } = req.body;
     await Admin.create({
-      name, email, password, phone, address, type, otp, token
+      name,
+      email,
+      password,
+      phone,
+      address,
+      type,
+      otp,
+      token
     });
     res.json({ message: "register Server is started here..." });
   } catch (err) {
