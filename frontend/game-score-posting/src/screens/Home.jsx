@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react'
+import { MdOutlineDeleteOutline } from "react-icons/md";
+import { CiEdit } from "react-icons/ci";
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
     const [post, setPost] = useState([])
     const [loading, setLoading] = useState(true)
+    const navigate = useNavigate()
 
     const fetchPost = async () => {
         const response = await fetch('http://localhost:5000/api/user/')
         const data = await response.json()
         setPost(data.data)
-        setLoading(false) // Move this here to stop loading after fetching the posts
+        setLoading(false)
         console.log('posts:', data)
     }
 
@@ -16,25 +20,35 @@ function Home() {
         fetchPost()
     }, [])
 
+    const deletePost = (id) => {
+        const clickedPost = post.find(p => p._id === id);
+        console.log('clicked post:', clickedPost);
+        console.log(clickedPost)
+    }
+    const editPost = (id) => {
+        const clickedPost = post.find(p => p._id === id);
+        console.log(clickedPost)
+        navigate('/delete-post')
+    }
     return (
         <>
             <h1>Home</h1>
-            <div>
-                <h2>Welcome to Game Score Posting</h2>
-                <p>Game Score Posting is a web application where you can post, update and delete your game scores.</p>
-                <p>It is a simple and easy to use application where you can keep track of your game scores.</p>
-                <p>It is a secure application where you need to verify your account before you can post, update and delete your game scores.</p>
-                <p>Click on the Sign Up link to create an account and then you can login to post, update and delete your game scores.</p>
-            </div>
+
             <div>
                 <h2>Posts</h2>
                 {
                     loading ? <h2>Loading...</h2> : post.map((post) => {
                         return (
-                            <div key={post._id}>
-                                <h3>{post.title}</h3>
-                                <p>{post.description}</p>
-                                <p>{post.score}</p>
+                            <div key={post._id} className='post'>
+                                <div className="content">
+                                    <h3 className='post-title'>{post.title}</h3>
+                                    <p className='post-description'>{post.description}</p>
+                                    <p className='post-score'>{post.score}</p>
+                                </div>
+                                <div className="actions">
+                                    <MdOutlineDeleteOutline onClick={() => deletePost(post._id)} />
+                                    <CiEdit onClick={() => editPost(post._id)} />
+                                </div>
                             </div>
                         )
                     })

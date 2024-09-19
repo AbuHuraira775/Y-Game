@@ -1,11 +1,10 @@
 import './App.css';
-import Home from './screens/Home';
+import MainRouting from './routers/routes';
 
 function App() {
   return (
     <div className="App">
-      <h1>Game Score Posting</h1>
-      <Home />
+      <MainRouting />
     </div>
   );
 }

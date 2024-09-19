@@ -5,8 +5,6 @@ var cors = require("cors");
 const DB_CONNECTION = require('./utils/db-connection');
 const userRouter = require('./routers/user');
 const adminRouter = require('./routers/admin');
-const generate_OPT = require('./utils/generate-otp');
-generate_OPT()
 
 // middleware allow to use json 
 app.use(cors({ origin: true, credentials: true }));
