@@ -10,6 +10,13 @@ node_modules/
 
 # Ignore .env file
 .env
+
+/backend/node_modules/
+
+# Ignore .env file in backend
+/backend/.env
+
+
 # testing
 /coverage
 
