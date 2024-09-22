@@ -7,13 +7,13 @@ import { useNavigate } from 'react-router-dom';
 function Login() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState(''); 
   
   const url = "http://localhost:5000/api/admin/login";
   const headers = { "Content-Type": "application/json" };
 
-  const login = async() => {
-    const data = {
+  const login = async() => {  
+    const data = { 
       email, password
     };
     axios.post(url, data, { headers: headers })
@@ -49,6 +49,7 @@ function Login() {
       name="password" 
       onChange={(val) => setPassword(val)} 
     />    
+    <p>this is login</p>
       <BtnCom text="Login " onClick={()=>login( email, password)}/>
     </>
   )

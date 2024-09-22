@@ -11,6 +11,7 @@ router.post('/verify-account',adminController.verifyAccount)
 router.post('/add-post',adminController.addPost)
 router.post('/update-post/:id',adminController.updatePost)
 router.delete('/delete-post/:id',adminController.deletePost)
+
 router.post('/verify-admin',authVerify)    
 
 module.exports = router

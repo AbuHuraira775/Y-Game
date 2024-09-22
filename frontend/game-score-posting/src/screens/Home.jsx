@@ -17,6 +17,7 @@ function Home() {
     }
 
     useEffect(() => {
+        localStorage.clear()
         fetchPost()
     }, [])
 

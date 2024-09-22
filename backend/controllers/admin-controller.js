@@ -67,7 +67,7 @@ const register = async (req, res) => {
         });
     } else {
       const otp = generate_OTP();
-      const token = await createToken(email, type);
+      // const token = await createToken(email, type);
       const hased_password = await hashPassword(password);
 
       sendOTP(email, otp);
@@ -79,7 +79,7 @@ const register = async (req, res) => {
         address,
         type,
         otp,
-        token,
+        // token,
       });
       return res.status(200).json({
         state: true,

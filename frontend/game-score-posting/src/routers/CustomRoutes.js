@@ -14,8 +14,8 @@ const useAuth = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      let token = JSON.parse(localStorage.getItem("user"))?.token;
-      let id = JSON.parse(localStorage.getItem("user"))?.id;
+      let token = JSON.parse(localStorage.getItem("user")).token;
+      let id = JSON.parse(localStorage.getItem("user")).id;
       var url = "http://localhost:5000/api/admin/verify-admin";
 
       if (!token || !id) setIsAuth(false);
@@ -69,12 +69,11 @@ const fetchAdmin = async()=>{
       },
     })
     .then((res) => {
-      console.log(res);
       if (res.status === 200) {
-        data['token'] = res?.data?.data?.token;
-        data['id'] = res?.data?.data?._id;
-        data['isVerified'] = res?.data?.data?.isVerified;
-        data['email'] = res?.data?.data?.email;  
+        data['token'] = res.data.data.token;
+        data['id'] = res.data.data._id;
+        data['isVerified'] = res.data.data.isVerified;
+        data['email'] = res.data.data.email;  
         
         // Store them in localStorage
         
@@ -130,21 +129,38 @@ const ExistAdmin = () => {
     return !data.token && !data.id ? <Navigate to="/" /> : <Outlet />;
   };
   
-  const IsRegistered = () => {
+  const IsRegistered = async() => { 
 
-    fetchAdmin()
+    // get response directly 
+    // use try and catch 
+    // fault tolerate 
+
+    // write (admin) CRUD only one 
+    // all are readers (contact)
+    // all are readers (home)
+    
+    // 1. admin crednetils (pre created)
+    // 2. admin login (frontend) (public)
+    // 3. OPTIMIZATION (least APIs)
+    // PUBLIC PAGES: 
+    // (home, login)
+    
+    await fetchAdmin()
     const user = JSON.parse(localStorage.getItem("user"));
-    console.log(`user : ${user}`);
+    console.log(user);
     if(!user){
-      alert(`Access denied`)
+      console.log('access denied ')
+      localStorage.clear()
       return <Navigate to='/'/>
     }
-    if(user.isVerified){
-      return <Navigate to='/profile'/>
+    if(!user.token && !user.id ){
+      console.log(`from is registered `,user)
+      return <Navigate to='/login' /> 
     }
     if(!user.isVerified){
       return <Navigate to='/verify-account'/>
     }
+    // localStorage.clear()
   };
   
   const CheckVerification = () => {

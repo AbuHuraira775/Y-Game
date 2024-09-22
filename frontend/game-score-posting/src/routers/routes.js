@@ -24,13 +24,13 @@ const MainRouting = () => {
         {/* protected routes for admin  */}
         {/* all protected routes check token and session id  */}
         {/* also check admin is verified or not  */}
-        <Route path="/add-post" element={<ForPost />}>
+        <Route path="/add-post" element={<ForPost />}>   
           <Route exact path="/add-post" element={<AddPost />} />
-        </Route>
+        </Route> 
         <Route path="/update-post/:id" element={<ForPost />}>
           <Route exact path="/update-post/:id" element={<UpdatePost />} />
         </Route>
-        <Route path="/delete-post/:id" element={<ForPost />}>
+        <Route path="/delete-post/:id" element={<ForPost />}> 
           <Route exact path="/delete-post/:id" element={<DeletePost />} />
         </Route>
         {/* if not verified before post add, update and delete  */}
@@ -42,7 +42,7 @@ const MainRouting = () => {
         {/* protected and conditional routes for admin -> must check token and session id*/}
         {/* if no admin exists*/}
         <Route path="/signup" element={<ExistAdmin />}>
-          <Route exact path="/signup" element={<SignUp />} />
+          <Route exact path="/signup" element={<SignUp />} /> 
         </Route>
 
         {/* if token and session is populated than show, otherwise goto home page  */}
