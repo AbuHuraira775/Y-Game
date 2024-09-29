@@ -1,59 +1,192 @@
-.App {
-  text-align: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body, html {
+  width: 100%;
+  background-color: var(--bg);
+  margin: 0;
+  padding: 0;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+:root {
+  /* --cardBG: #025669; */
+  --cardLogo: #0269a3;
+  --bg: #999A9E;
+  --light-color: #dae6f2;
+  --primary-blue: #0078d7;
+  --cardBg: #1C4742;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* ---------------common  */
+.center {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+}
+button {
+  color: #fff;
+}
+.active-link {
+  /* color: red;
+  background-color: pink; */
+}
+/* ------------- nav  */
+nav {
+  height: 3rem;
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.navLogo {
+  font-size: 1.5rem;
+  color: #0078d7;
+  /* color: #fff; */
+  /* background-color: pink; */
+  padding-right: 1rem;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+.menu{
+  cursor: pointer ;
 }
 
-.App-link {
-  color: #61dafb;
+/* -------------------toggle-nav */
+.toggle-nav{
+  background-color: #fff;
+  padding: 1rem 2rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max-content;
+  height: 100vh;
+  width: 100%;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-body{
+.toggle-nav ul{
+  list-style-type: none;
   display: flex;
   flex-direction: column;
+  /* align-items: start; */
+  justify-content: space-between;
+}
+.toggle-nav a{
+  text-decoration: none;
+  color: #0078d7;
+}
+.toggle-nav li button{
+  width: 100%;
+  margin-bottom: 1rem;
+  padding-left:  2rem;
+  padding-right:  2rem;
+}
+/* -------------------login */
+.box {
+  background-color: #fff;
+  padding: 2rem;
+  width: 100%;
+  margin: auto;
+  margin-top: 2rem;
+  border-radius: 0.8rem;
+}
+.field {
+  height: max-content;
+  margin-top: 0.7rem;
+  width: 100%;
+}
+.field input {
+  height: max-content;
+  width: 100%;
+  border-radius: 0.3rem;
+  background-color: transparent;
+  padding: 0.7rem;
+  outline: none;
+  border: 2px solid var(--light-color);
+  background-color: transparent;
+}
+.field button,
+.backToHome button {
+  width: 100%;
+  height: max-content;
+}
 
-  align-items: center;
-  justify-content: center;
+input:focus {
+  border: 2px solid var(--primary-blue);
+}
+/* -------------verify account  */
+.backToHome button {
+  width: max-content;
+  margin-top: 1rem;
+  display: flex;
+  justify-self: flex-end;
+  align-self: flex-end;
+}
+/* --------------------error  */
+.errorMessage {
+  display: flex;
+  align-self: start;
+  text-align: left;
+  justify-content: space-between;
+}
+.error {
+  color: red;
+  font-size: 0.8rem;
+}
+/* -----------------post  */
+.allPosts{
+  /* background-color: green; */
+  max-width: 100%;
+  height: max-content;
+  padding: 4rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
 }
 .post{
-  padding: 2rem;
+  background-color: var(--cardBg);
+  padding: 1rem;
   border-radius: 1rem;
-  margin-bottom: 1rem;
   display: flex;
-  flex-direction: column;
+
+}
+.post .cardLogo{
+  width: 100%;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;  
+  /* border: .1rem solid #fff; */
+  /* padding: .2rem; */
+}
+.post .content{
+  margin: 0 1rem;
+  color: #fff;
+}
+.post img{
+  width: 100%;
+  border-radius: .8rem;
+}
+.post a{
+  text-decoration: none;
+  color: #fff;
+}
+.actions{
+  display: flex;
   align-items: center;
-  justify-content: center;
-  align-self: center;
-  width: max-content;
-  height: max-content;
-  border: 1px solid black;
+  justify-content: space-around;
+  margin-top: 1rem;
+  color: #fff;
+}
+.actions button{
+  /* background-color: var(--cardLogo); */
+  color: #fff;
+  /* font-size: 1rem; */
+}
+
+.post .p{
+  margin: .5rem 0;
 }

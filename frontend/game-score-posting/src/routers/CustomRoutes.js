@@ -2,35 +2,27 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
-const PublicRoutes = () => {
-  let token = localStorage.getItem("token");
-  let id = localStorage.getItem("id");
-  console.log(`token : ${token} \nid : ${id}`);
-  return token && id ? <Navigate to="/profile" /> : <Outlet />;
-};
 
 const useAuth = () => {
   const [isAuth, setIsAuth] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      let token = JSON.parse(localStorage.getItem("user")).token;
-      let id = JSON.parse(localStorage.getItem("user")).id;
+      let token = localStorage.getItem("token");
+      let id = localStorage.getItem("session_id");
       var url = "http://localhost:5000/api/admin/verify-admin";
 
       if (!token || !id) setIsAuth(false);
       else {
         try {
           const res = await axios.post(url, { token, id, apiType: "route" });
-          console.log(res);
+          console.log(`response from the isAuth: ${res}`);
           setIsAuth(false);
 
           if (res.status === 200) {
             console.log("noice");
             setIsAuth(true);
           } else {
-            console.log("else:");
-
             setIsAuth(false);
             localStorage.clear();
           }
@@ -55,81 +47,39 @@ const PrivateRoute = () => {
     // waiting..
     return null;
 
-  return isAuth ? <Outlet /> : <Navigate to="/login" />;
+  return isAuth ? <Outlet /> : <Navigate to="/otp-send" />;
 };
 
-const fetchAdmin = async()=>{
-  const url = "http://localhost:5000/api/admin/get-admin";
-  let data = {}
-  
-  axios
-  .get(url, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-    .then((res) => {
-      if (res.status === 200) {
-        data['token'] = res.data.data.token;
-        data['id'] = res.data.data._id;
-        data['isVerified'] = res.data.data.isVerified;
-        data['email'] = res.data.data.email;  
+  // const url = "http://localhost:5000/api/admin/get-admin";
+  // let data = {}
+  // axios
+  // .get(url, {  
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //   .then((res) => {
+  //     if (res.status === 200) {
+  //       data['token'] = res.data.data.token;
+  //       data['id'] = res.data.data._id;
+  //       data['isVerified'] = res.data.data.isVerified;
+  //       data['email'] = res.data.data.email;  
         
-        // Store them in localStorage
+  //       // Store them in localStorage
         
-        localStorage.setItem('user', JSON.stringify({
-          token: data.token,
-          id: data.id,
-          email: data.email,
-          isVerified: data.isVerified
-        }));
+  //       localStorage.setItem('user', JSON.stringify({
+  //         token: data.token,
+  //         id: data.id,
+  //         email: data.email,
+  //         isVerified: data.isVerified
+  //       }));
         
-      } 
-    })
-    .catch((err) => {
-      console.log(err);
-      localStorage.clear();
-    });
-  }
-
-const ExistAdmin = () => {
-  // localStorage.clear()
-  const url = "http://localhost:5000/api/admin/get-admin";
-  let data = {}
-  axios
-  .get(url, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-    .then((res) => {
-      console.log(res);
-      if (res.status === 200) {
-        data['token'] = res.data.data.token;
-        data['id'] = res.data.data._id;
-        data['isVerified'] = res.data.data.isVerified;
-        data['email'] = res.data.data.email;  
-        localStorage.setItem('user', JSON.stringify({
-          token: data.token,
-          id: data.id,
-          email: data.email,
-          isVerified: data.isVerified
-        }));
-      } 
-    })
-    .catch((err) => {
-      console.log(err);
-      localStorage.clear();
-    });
-    // Get the token and ID from local storage
-    // data.token = localStorage.getItem("token");
-    // data.id = localStorage.getItem("id");
-    // data.isVerified = localStorage.getItem("isVerified");
-    // data.email = localStorage.getItem("adminEmail");
-    return !data.token && !data.id ? <Navigate to="/" /> : <Outlet />;
-  };
-  
-  const IsRegistered = async() => { 
+  //     } 
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //     localStorage.clear();
+  //   });
 
     // get response directly 
     // use try and catch 
@@ -145,51 +95,24 @@ const ExistAdmin = () => {
     // PUBLIC PAGES: 
     // (home, login)
     
-    await fetchAdmin()
-    const user = JSON.parse(localStorage.getItem("user"));
-    console.log(user);
-    if(!user){
-      console.log('access denied ')
-      localStorage.clear()
-      return <Navigate to='/'/>
-    }
-    if(!user.token && !user.id ){
-      console.log(`from is registered `,user)
-      return <Navigate to='/login' /> 
-    }
-    if(!user.isVerified){
-      return <Navigate to='/verify-account'/>
-    }
-    // localStorage.clear()
-  };
-  
-  const CheckVerification = () => {
-    fetchAdmin()
-    const user = JSON.parse(localStorage.getItem("user"));
-    console.log(`from check verification `,user)
-    return (user.token && user.id && user.isVerified ) ? <Navigate to="/profile" /> : <Outlet />;
-  };
   
   const IsVerified = () => {
-    fetchAdmin()
-    const user = JSON.parse(localStorage.getItem("user"));
-    console.log(`from check verification `,user)
-    return (user.token && user.id && user.isVerified ) ? <Navigate to="/profile" /> : <Outlet />;
+    // const user = JSON.parse(localStorage.getItem("user"));
+    // console.log(`from check verification `,user)
+    let token = localStorage.getItem('token')
+    let id = localStorage.getItem('session_id')
+    return (token && id)? <Outlet />: <Navigate to="/login" />  ;
 };
 
-const ForPost =()=>{
- 
-  fetchAdmin()
-  const user = JSON.parse(localStorage.getItem("user"));
-  console.log(`from check verification `,user)
-  return (user.token && user.id && user.isVerified ) ? <Outlet />: <Navigate to="/verify-account" />  ; 
+const IsAdmin  = ()=>{
+  
+  let token = localStorage.getItem("token");
+  let id = localStorage.getItem("session_id");
+  return (token && id)?  <Outlet /> : <Navigate to="/login"/>
 }
 export {
-  PublicRoutes,
   PrivateRoute,
-  CheckVerification,
-  IsRegistered,
   IsVerified,
-  ExistAdmin,
-  ForPost
+  IsAdmin,
+  useAuth
 };
