@@ -11,12 +11,14 @@ function Contact() {
   const [errorMessage, setErrorMessage] = useState('')
   const [popUp, setPopUp] = useState(false)
   const [btnStatus, setBtnStatus] = useState(false)
+  const [success, setSuccess] = useState(false)
 
   const url = `http://localhost:5000/api/user/contact`
   const headers = { "Content-Type": "application/json" };
 
   const submitForm = async (email, name, message) => {
     setBtnStatus(true)
+    setSuccess('')
     setErrorMessage('')
     const data = { email, name, message }
     console.log(data)
@@ -25,17 +27,18 @@ function Contact() {
         .then((res) => {
           console.log(`success`, res)
           if (res.status === 200) {
+            setSuccess(res.data.message)
             setEmail('')
             setName('')
             setMessage('')
             // setErrorMessage(res.data.message)
           }
-          if(!res){
+          if (!res) {
             setErrorMessage('Network error. Please check your internet connection.');
           }
         })
         .catch((err) => {
-          if (err.status === 400 ||err.status === 401) {
+          if (err.status === 400 || err.status === 401) {
             setErrorMessage(err.response.data.msg)
           }
           else {
@@ -46,8 +49,8 @@ function Contact() {
 
     }
     catch (err) {
-      if(err){
-        console.log('catch err',err)
+      if (err) {
+        console.log('catch err', err)
         setErrorMessage('catch Network error. Please check your internet connection.');
       }
     }
@@ -76,10 +79,14 @@ function Contact() {
         </div>
 
         <div className="errorMessage">
-          {popUp ? { message } : <p className='error'>{errorMessage}</p>}
+          {popUp ? null : <p className='error'>{errorMessage}</p>}
+        </div>
+
+        <div className="successMessage">
+          {popUp ? null : <p className='error success'>{success}</p>}
         </div>
         <div className="field">
-          <BtnCom text={btnStatus ? "PLEASE WAIT..." : "SUBMIT"} onClick={() => submitForm(email, name, message)} varient='contained' isAble={btnStatus?btnStatus:btnStatus}/>
+          <BtnCom text={btnStatus ? "PLEASE WAIT..." : "SUBMIT"} onClick={() => submitForm(email, name, message)} varient='contained' isAble={btnStatus ? btnStatus : btnStatus} />
         </div>
       </div>
     </Container>

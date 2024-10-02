@@ -16,6 +16,8 @@ import Handle from "../screens/Handle";
 import Navbar from "../compopnents/Navbar";
 
 const MainRouting = () => {
+  const title = '404 Error'
+  const description = 'Page Not Found'
   return (
     <>
       <Router>
@@ -29,7 +31,7 @@ const MainRouting = () => {
           {/* public routes for users  */}
           <Route exact path="/" element={<Home />} />
           <Route exact path="/contact" element={<Contact />} />
-          <Route exact path="*" element={<Error />} />
+          <Route exact path="*" element={<Error title={title} description={description}/>} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/test" element={<Test />} />
           <Route exact path="/handle" element={<Handle />} />

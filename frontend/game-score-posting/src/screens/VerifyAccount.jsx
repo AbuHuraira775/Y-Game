@@ -98,7 +98,7 @@ function VerifyAccount() {
       <Container maxWidth="sm">
         <div className="box verifyBox">
 
-        <div className="verifyDescription">
+        <div className="verifyDescription heading">
           <h1>Verify Your Account</h1>
           <p>Enter the OTP sent to your email to verify your account</p>
         </div>

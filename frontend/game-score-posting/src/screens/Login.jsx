@@ -37,7 +37,7 @@ function Login() {
             localStorage.setItem("isVerified", res.data.data.isVerified);
             localStorage.setItem("email", res.data.data.email);
 
-            navigate('/profile');
+            navigate('/');
           }
           else if(!res){
             setErrorMessage('Network error. Please check your internet connection.');

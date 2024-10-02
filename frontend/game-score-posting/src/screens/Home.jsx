@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 import React, { useEffect, useState } from 'react'
-import { MdEdit, MdOutlineDeleteOutline } from "react-icons/md";
+import { MdEdit, MdEditLocation, MdModeEditOutline, MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import DeletePost from './DeletePost';
@@ -20,10 +20,13 @@ function Home() {
     const [loading, setLoading] = useState(true)
     const [edit, setEdit] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState(null);
+    const [selectScore, setSelectScore] = useState(null);
     const [selectedPostScore, setSelectedPostScore] = useState(null);
     const [isAuth, setIsAuth] = useState(false)
     const [popUp, setPopUp] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+    const [currentPage, setCurrentPage] = useState(1); // State to track the current page
+    const postsPerPage = 20; // Number of posts per page
     console.log('home', useAuth())
 
 
@@ -41,10 +44,6 @@ function Home() {
                 setPost(data.data)
                 setLoading(false)
             }
-            if (!response) {
-                setErrorMessage('Network error. Please check your internet connection.');
-                console.log('Network error: ', response);
-            }
             console.log('posts:', data)
         }
         catch (err) {
@@ -53,23 +52,31 @@ function Home() {
                 setErrorMessage(err.message);
             }
 
-            if (err.status === 400 || 401 || 402 || 403) {
-                setErrorMessage(err.response.data.msg)
+            else if (err.status === 400 || 401 || 402 || 403) {
+                console.log(err)
+                // setErrorMessage(err)
             }
             else {
                 setErrorMessage('Network error. Please check your internet connection.');
                 console.log('Network error: ', err);
             }
+            console.log('home ',err)
         }
     }
 
     useEffect(() => {
-        fetchPost()
+        try {
+            fetchPost()
+        }
+        catch (err) {
+            console.log('home', err)
+        }
     }, [])
 
     const onClose = () => {
         setIsAuth(false)
         setEdit(false)
+        navigate('/handle')
     }
     const deleteWithId = async (id) => {
         console.log(id)
@@ -114,12 +121,13 @@ function Home() {
             fetchPost()
         }
     }
-    const deletePost = (id, onClose, deleteWithId) => {
+    const deletePost = (id, score) => {
         let token = localStorage.getItem("token");
         let session = localStorage.getItem("session_id");
         console.log(id)
         if (token && session) {
             setSelectedPostId(id)
+            setSelectScore(score)
             setIsAuth(true);
             setEdit(false)
         }
@@ -129,6 +137,7 @@ function Home() {
     }
 
     const editPost = (id, score) => {
+        // alert('edit')
         let token = localStorage.getItem("token");
         let session = localStorage.getItem("session_id");
         console.log(id, score)
@@ -144,50 +153,67 @@ function Home() {
         }
     }
     const url = 'https://pks.com/'
-
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = post.slice(indexOfFirstPost, indexOfLastPost);
+    const handleChange = (event, value) => {
+        setCurrentPage(value);
+    };
     return (
         <>
             <div className='allPosts'>
 
+            <div className="heading">
+                                    <h1>Your Daily Cards</h1>
+                                </div>
                 {
 
 
-                    loading ? <h2>Loading...</h2> : post.map((post, ind) => {
+                    loading ? <div>
+                        <h2>Fetching Your Data</h2>
+                        <p>Please Wait...</p>
+                    </div> : currentPosts.map((post, ind) => {
                         return (
-                            <Container key={post._id} className='post'>
-                                <div className="cardLogo">
+                            
+                                <Container key={post._id} className='cpost'>
+                                    {/* <div className="cardLogo">
                                     <img src="https://i.pinimg.com/474x/f8/b2/c4/f8b2c434ccea75a8e018bc882152040d.jpg" alt="" />
-                                </div>
-                                <div className="cardAbout">
+                                    </div> */}
+                                    <div className="cardAbout">
 
-                                    <div className="content">
-                                        {/* <p className="cardNumber p">{ind+1}</p> */}
-                                        <h1 className="pks p">PKS</h1>
-                                        <h3 className="report p">Report</h3>
-                                        <p className="date p">Updated on: {post.date}</p>
-                                        <h5 className='post-score p'>{post.score}</h5>
-                                        <Link to={url}><h5>{url}</h5></Link>
+
+                                        <div className="cpost">
+                                            <div className="postCard">
+                                                <div className="postContent">
+                                                    <div className="cpks c center"><p>PKS</p></div>
+                                                    <div className="creport c"><p>Reports {post.score}</p></div>
+                                                    <div className="cdate  c"><p>{post.date}</p></div>
+                                                </div>
+                                            </div>
+                                            <div className="clink b">
+                                                <p>Visit Site: <Link to={url}>Website</Link></p>
+                                                <div className="actions">
+                                                    <div className="edit">
+                                                        <IconButton aria-label="edit">
+                                                            <MdEdit onClick={() => editPost(post._id, post.score)} className='editIcon' />
+                                                        </IconButton>
+                                                    </div>
+                                                    <div className="delete">
+                                                        <IconButton aria-label="delete">
+                                                            <DeleteIcon onClick={() => deletePost(post._id, post.score)} color='error' />
+                                                        </IconButton>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+
                                     </div>
 
-
-
-
-                                    <div className="actions">
-                                        <div className="delete">
-                                            <IconButton aria-label="delete">
-                                                <DeleteIcon onClick={() => deletePost(post._id)} />
-                                            </IconButton>
-                                        </div>
-                                        <div className="edit">
-                                            <IconButton aria-label="delete">
-                                                <MdEdit onClick={() => editPost(post._id, post.score, post.title, post.description)} />
-                                            </IconButton>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </Container>
+                                </Container>
+                            
                         )
                     })
                 }
@@ -196,7 +222,7 @@ function Home() {
 
                 {
                     isAuth ?
-                        <DeletePost post_id={selectedPostId} onClose={onClose} deleteWithId={() => deleteWithId(selectedPostId)} />
+                        <DeletePost post_id={selectedPostId} onClose={onClose} score={selectScore} deleteWithId={() => deleteWithId(selectedPostId)} />
                         : null
                 }
                 {
@@ -205,6 +231,18 @@ function Home() {
                         : null
                 }
 
+
+            </div>
+            <div className="pagination box">
+
+                <Stack spacing={2}>
+                    <Pagination
+                        count={Math.ceil(post.length / postsPerPage)} // Total number of pages
+                        // count='80'
+                        page={currentPage}
+                        onChange={handleChange}
+                        color="primary" />
+                </Stack>
             </div>
 
 

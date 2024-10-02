@@ -88,9 +88,9 @@ function AddPost() {
     </LocalizationProvider> */}
 
       <div className="box addPostBox">
-        <div className="addPostHeading">
-          <h1>Enter Score</h1>
-          <p>Enter the score to add the post</p>
+        <div className="addPostHeading heading">
+          <h1>Enter Number</h1>
+          <p>Enter the number. Number should be greater than 0</p>
         </div>
         <div className="addPostsFields">
           <div className="field">

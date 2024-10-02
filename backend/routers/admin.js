@@ -9,7 +9,7 @@ router.post('/register',adminController.register)
 router.get('/get-admin',adminController.fetchAdmin)
 router.post('/verify-account',adminController.verifyAccount)
 router.post('/add-post',adminController.addPost)
-router.post('/update-post/:id',adminController.updatePost)
+router.put('/update-post/:id',adminController.updatePost)
 router.delete('/delete-post/:id',adminController.deletePost)
 
 router.post('/verify-admin',authVerify)    

@@ -6,9 +6,9 @@ const home = async (req, res) => {
   try {
     const allPosts = await Post.find();
     if (!allPosts) {
-      return res.json({ message: "No posts available" });
+      return res.status(400).json({ message: "No posts available" });
     } else {
-      return res.json({
+      return res.status(200).json({
         state: true,
         msg: `All posts are rendered`,
         data: allPosts,
@@ -24,10 +24,10 @@ const contact = async(req, res) => {
     const { name, email, message } = req.body;
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!name || !email || !message) {
-      return res.status(422).json({ error: "Please fill the contact form" });
+      return res.status(400).json({ state:false, msg: "Please fill the contact form" });
     } else {
       if (!emailRegex.test(email)) {
-        return res.status(422).json({ error: "Invalid Email" });
+        return res.status(401).json({ status:false,msg: "Invalid Email" });
       } else {
         await Contact.create({name, email, message});
         sendContact(name,email, message);

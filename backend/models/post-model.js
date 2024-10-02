@@ -2,9 +2,8 @@ const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
   email: { type: String, require: true },
-  title: { type: String },
-  description: { type: String },
-  score: { type: String, require: true },
+  score: { type: Number, require: true },
+  date: { type: String, require: true },
 },
 {timestamps:true}
 );

@@ -11,9 +11,9 @@ function UpdatePost({ post_id, onClose, value, edit }) {
   const [isEdit, setIsEdit] = useState(edit)
   const [btnStatus, setBtnStatus] = useState(false)
   const [confirm, setConfirm] = useState(false)
+  const [updateErrorMessage, setUpdateErrorMessage] = useState(false)
 
-  const [popUp, setPopUp] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [popUp, setPopUp] = useState(true)
   // const [loading, setLoading] = useState(value)
 
   console.log('Posr score from update component', number)
@@ -29,13 +29,17 @@ function UpdatePost({ post_id, onClose, value, edit }) {
       console.log('posts:', data)
     }
     catch (err) {
+      setUpdateErrorMessage(err)
       console.log('error', err)
     }
   }
 
+
   const onEdit = async (id, score) => {
-    setConfirm(true)
-    setIsEdit(false)
+    setBtnStatus(true)
+    setUpdateErrorMessage('')
+    // setConfirm(true)
+    // setIsEdit(false)
     let email = localStorage.getItem('email')
     let data = JSON.stringify({ email, number });
 
@@ -53,38 +57,49 @@ function UpdatePost({ post_id, onClose, value, edit }) {
       await axios.request(config)
         .then((res) => {
           if (res.status === 200) {
-            // navigate('/handle')
-            
+            setIsEdit(false)
+
+            navigate('/handle')
+          }
+          else{
+            setUpdateErrorMessage('why')
           }
         })
         .catch((err) => {
-          if (err.message === 'Network Error') {
-            setErrorMessage(err.message);
+          if (err.status === 400 || err.status === 401 || err.status === 402 || err.status === 403) {
+            console.log('o',err)
+            setUpdateErrorMessage(err.response.data.msg)
           }
-          else if (err.status === 400 || err.status === 401 || err.status === 402 || err.status === 403) {
-            setErrorMessage(err.response.data.msg)
+          if(!err){
+
+            setUpdateErrorMessage('why')
           }
-          console.log(err);
+          // console.log(`update catch ${err}`)
+          if (err.message) {
+            // setIsEdit(false)
+            setUpdateErrorMessage(err.response.data.msg);
+          }
+          else{
+            setUpdateErrorMessage('Network Error')
+          }
         });
     }
     catch (err) {
-      if (err.status === 400 || 401 || 402 || 403) {
-        setErrorMessage(err.response.data.msg)
-      }
-      if (!err.respones) {
-        setErrorMessage("Network Error. Please check your Internet Connection")
+      
+      if (err.message) {
+        // setIsEdit(false)
+        setUpdateErrorMessage(err.response.data.msg);
       }
       console.log('error', err)
     }
     finally {
-      setBtnStatus(false)
-      setIsEdit(false)
       fetchPost()
+      setBtnStatus(false)
     }
   }
   return (
     isEdit ? (
-      <div className='box editBoc' >
+      <div className='box editBox' >
 
         <div className="field">
 
@@ -97,25 +112,25 @@ function UpdatePost({ post_id, onClose, value, edit }) {
 
         <div className="error">
           <div className="errorMessage">
-            {popUp ? <p className='error'>{errorMessage} </p> : null}
+            {!btnStatus ? <p className='error'>{updateErrorMessage} </p> : null}
           </div>
-        </div>
-        <div className="field">
-
-          <BtnCom text="Update Post" onClick={() => onEdit(post_id, number)} varient='outlined' isAble={btnStatus ? btnStatus : btnStatus} />
         </div>
         <div className="field">
 
           <BtnCom onClick={onClose} text="Cancel" varient='outlined' isAble={btnStatus ? btnStatus : btnStatus} />
 
         </div>
+        <div className="field">
 
-        {
+          <BtnCom text="Update" onClick={() => onEdit(post_id, number)} varient='contained' isAble={btnStatus ? btnStatus : btnStatus} />
+        </div>
+
+        {/* {
           confirm ? <PopUp post_id={post_id} onClose={onClose} score={number}/>: null
-        }
+        } */}
       </div>
 
-      
+
     ) : (
       null
     )

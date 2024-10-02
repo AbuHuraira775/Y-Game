@@ -16,7 +16,7 @@ const authVerify = async (req, res, next) => {
             .send({
               state: "false",
               msg:
-                "Currently your account is not verified, Kindly contact to service center.",
+                "Currently your account is not verified, Please verify your account first",
             }); 
         }
         else {

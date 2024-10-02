@@ -28,9 +28,8 @@ body, html {
 button {
   color: #fff;
 }
-.active-link {
-  /* color: red;
-  background-color: pink; */
+.heading h2,.heading p,.heading h3{
+  margin-bottom: 1rem;
 }
 /* ------------- nav  */
 nav {
@@ -134,8 +133,12 @@ input:focus {
   justify-content: space-between;
 }
 .error {
+  margin: 4px 0;
   color: red;
   font-size: 0.8rem;
+}
+.success{
+  color: #4BB543;
 }
 /* -----------------post  */
 .allPosts{
@@ -144,7 +147,7 @@ input:focus {
   height: max-content;
   padding: 4rem;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr ;
   gap: 1rem;
 }
 .post{
@@ -179,14 +182,94 @@ input:focus {
   align-items: center;
   justify-content: space-around;
   margin-top: 1rem;
-  color: #fff;
+  /* background-color: pink; */
+  /* color: #fff; */
 }
 .actions button{
   /* background-color: var(--cardLogo); */
-  color: #fff;
+  /* color: #fff; */
   /* font-size: 1rem; */
 }
 
 .post .p{
   margin: .5rem 0;
+}
+/* ------------deleteBox  */
+.deleteBox, .editBox{
+  position: fixed;
+  width: 50vw;
+  padding:  3rem;
+  top: 5rem;
+  left: 25%;
+  margin: auto;
+}
+.editIcon{
+  color: #0078d7;
+}
+/* ----------------------pagination */
+.pagination{
+  position:fixed;
+  bottom: 0;
+  width: 100%;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0 0 0 ;
+}
+/* ------------test  */
+
+
+.cpost{
+  width: 100%;
+  margin: auto;
+  margin-top: 1rem;
+  background-color: #fff;
+  border-radius: .5rem;
+}
+.postCard{
+  border-radius: .5rem .5rem 0 0;
+
+  height: 300px;
+  background-image: url('https://i.pinimg.com/564x/a2/87/f9/a287f9f3a703a1031d938c7598cdca76.jpg');
+  background-repeat: no-repeat;
+  background-position:right ;
+  background-size: cover;
+  width: 100%;
+}
+.postContent{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  /* background-color: pink; */
+  justify-content: end;
+  /* padding-right: 1rem; */
+}
+.c{
+  font-weight: bold;
+  font-size: .9rem;
+  margin-bottom: 1rem;
+  background: radial-gradient(circle,black,red);
+  border-radius: 5rem;
+  padding: .5rem;
+  border: .1rem dashed #ffff;
+  color: #fff;
+  display: flex;
+  align-items: center ;
+}
+.clink{
+  /* background-color: red; */
+  padding: .5rem;
+  /* color: #0078d7; */
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: max-content;
+}
+.clink a{
+  color: #0078d7;
+  text-decoration: none;
 }

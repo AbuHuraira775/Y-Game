@@ -49,8 +49,8 @@ function SendOTP() {
         <div>
             <Container maxWidth="sm" style={{ overflowX: 'hidden' }}>
                 <div className="box sentOTPbox">
-                    <div className="otpDescription">
-                        <h1>Email Address</h1>
+                    <div className="otpDescription heading">
+                        <h2>Email Address</h2>
                         <p>Enter your registered Email address is to verify your account</p>
                     </div>
                     <div className="field">
