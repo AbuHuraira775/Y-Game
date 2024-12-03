@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const adminController = require('../controllers/admin-controller')
 const { authVerify } = require('../middleware/authVerify')
+const authMiddleware = require('../middleware/auth-middleware')
 
 router.post('/otp-send',adminController.sendOtp)
 router.post('/login',adminController.login)
@@ -12,7 +13,7 @@ router.post('/add-post',adminController.addPost)
 router.put('/update-post/:id',adminController.updatePost)
 router.delete('/delete-post/:id',adminController.deletePost)
 
-router.post('/verify-admin',authVerify)    
+router.get('/verify-admin',authMiddleware, adminController.getAdmin)    
 
 module.exports = router
 

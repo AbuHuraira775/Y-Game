@@ -9,7 +9,6 @@ const adminSchema = new mongoose.Schema({
   type: { type: String, required: true, default: "admin" },
   isVerified: { type: Boolean, default: false },
   otp: { type: String },
-  token: { type: String, required: true },
 });
 
 const Admin = new mongoose.model('Admin',adminSchema)

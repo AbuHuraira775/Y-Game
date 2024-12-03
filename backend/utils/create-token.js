@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken')
-const Admin = require('../models/admin-model')
 
-const createToken = async (email, type) => {
+const createToken = async (email, id, type) => {
     return jwt.sign({
+        id: id,
         type: type,
         email: email
     }, process.env.SECRET_KEY, { expiresIn: '10d' })

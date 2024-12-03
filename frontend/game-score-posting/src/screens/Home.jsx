@@ -1,36 +1,29 @@
-import Button from '@mui/material/Button';
 import React, { useEffect, useState } from 'react'
-import { MdEdit, MdEditLocation, MdModeEditOutline, MdOutlineDeleteOutline } from "react-icons/md";
-import { CiEdit } from "react-icons/ci";
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { MdDelete, MdEdit } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
 import DeletePost from './DeletePost';
 import axios from 'axios';
-import { useAuth } from '../routers/CustomRoutes';
 import UpdatePost from './UpdatePost';
-import { Card, Container, IconButton, Pagination, Typography } from '@mui/material';
-import BtnCom from '../compopnents/BtnComp';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Container, IconButton, Pagination } from '@mui/material';
 import Stack from '@mui/material/Stack';
-import { BrowserRouter as Router, Routes } from 'react-router-dom';
-import Navbar from '../compopnents/Navbar';
+import { useAuth } from '../store/auth';
+
 
 function Home() {
-
+    const { isLoggedIn } = useAuth()
+    const navigate = useNavigate()
+    const { userAuthentication } = useAuth()
     const [post, setPost] = useState([])
     const [loading, setLoading] = useState(true)
-    const [edit, setEdit] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [selectScore, setSelectScore] = useState(null);
     const [selectedPostScore, setSelectedPostScore] = useState(null);
-    const [isAuth, setIsAuth] = useState(false)
+    const [postDelete, setPostDelete] = useState(false)
+    const [edit, setEdit] = useState(false);
     const [popUp, setPopUp] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const [currentPage, setCurrentPage] = useState(1); // State to track the current page
     const postsPerPage = 20; // Number of posts per page
-    console.log('home', useAuth())
-
-
-    const navigate = useNavigate()
 
     const fetchPost = async () => {
         try {
@@ -44,7 +37,6 @@ function Home() {
                 setPost(data.data)
                 setLoading(false)
             }
-            console.log('posts:', data)
         }
         catch (err) {
 
@@ -53,20 +45,21 @@ function Home() {
             }
 
             else if (err.status === 400 || 401 || 402 || 403) {
-                console.log(err)
-                // setErrorMessage(err)
+                setErrorMessage(err)
             }
             else {
                 setErrorMessage('Network error. Please check your internet connection.');
                 console.log('Network error: ', err);
             }
-            console.log('home ',err)
         }
     }
 
     useEffect(() => {
         try {
+            setEdit(false)
+            setPostDelete(false)
             fetchPost()
+            userAuthentication()
         }
         catch (err) {
             console.log('home', err)
@@ -74,21 +67,20 @@ function Home() {
     }, [])
 
     const onClose = () => {
-        setIsAuth(false)
+        setPostDelete(false)
         setEdit(false)
-        navigate('/handle')
     }
     const deleteWithId = async (id) => {
         console.log(id)
-        // let email = localStorage.getItem('email')
+        let email = localStorage.getItem('email')
         let data = JSON.stringify({
-            "email": "gsite616@gmail.com"
+            email
         });
 
         let config = {
-            method: 'delete',
+            method: 'DELETE',
             maxBodyLength: Infinity,
-            url: `http://localhost:5000/api/admin/delete-post/${id}`,
+            url: `http://localhost:5000/api/admin/delete-post/${selectedPostId}`,
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -98,8 +90,7 @@ function Home() {
 
             await axios.request(config)
                 .then((response) => {
-                    alert('Post deleted successfully')
-                    setIsAuth(false);
+                    setPostDelete(false);
                     console.log(JSON.stringify(response));
                 })
                 .catch((err) => {
@@ -122,107 +113,122 @@ function Home() {
         }
     }
     const deletePost = (id, score) => {
-        let token = localStorage.getItem("token");
-        let session = localStorage.getItem("session_id");
-        console.log(id)
-        if (token && session) {
+        if (isLoggedIn) {
             setSelectedPostId(id)
             setSelectScore(score)
-            setIsAuth(true);
+            setPostDelete(true);
             setEdit(false)
+            console.log(id,score)
         }
         else {
-            setIsAuth(false)
+            setPostDelete(false)
         }
     }
 
     const editPost = (id, score) => {
-        // alert('edit')
-        let token = localStorage.getItem("token");
-        let session = localStorage.getItem("session_id");
-        console.log(id, score)
-        if (token && session) {
+        if (isLoggedIn) {
+            setEdit(true);
             setSelectedPostId(id)
             setSelectedPostScore(score)
-            setEdit(true);
-            setIsAuth(false);
-
+            setPostDelete(false);
+            console.log('edit', edit)
         }
         else {
             setEdit(false)
         }
     }
-    const url = 'https://pks.com/'
+    const imgURL = `https://i.pinimg.com/736x/f4/36/8a/f4368a88f9660c02d939410dd3f8103a.jpg`
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = post.slice(indexOfFirstPost, indexOfLastPost);
-    const handleChange = (event, value) => {
-        setCurrentPage(value);
-    };
+
     return (
-        <>
-            <div className='allPosts'>
+        <div className='bg-whit'>
 
-            <div className="heading">
-                                    <h1>Your Daily Cards</h1>
-                                </div>
-                {
+            <div className={` ${ edit || postDelete ? "opacity-50 overflow-hidden" :""} relative z-0  allPosts  bg-white w-full p-5 `} disabled>
 
+                <div className="heading text-3xl text-slate-700 font-bold mb-5 mt-10">
+                    <h1>Your Daily Game Scores</h1>
+                </div>
 
-                    loading ? <div>
-                        <h2>Fetching Your Data</h2>
-                        <p>Please Wait...</p>
-                    </div> : currentPosts.map((post, ind) => {
-                        return (
-                            
-                                <Container key={post._id} className='cpost'>
-                                    {/* <div className="cardLogo">
-                                    <img src="https://i.pinimg.com/474x/f8/b2/c4/f8b2c434ccea75a8e018bc882152040d.jpg" alt="" />
-                                    </div> */}
-                                    <div className="cardAbout">
+                <div className="postDisplayArea w-full ">
 
+                    {
+                        loading ? <div>
+                            <h2>Fetching Your Data</h2>
+                            <p>Please Wait...</p>
+                        </div> :
+                            <div className="allCards grid grid-cols-1 gap-8 sm:grid-cols-2  md:grid-cols-3 ">
 
-                                        <div className="cpost">
-                                            <div className="postCard">
-                                                <div className="postContent">
-                                                    <div className="cpks c center"><p>PKS</p></div>
-                                                    <div className="creport c"><p>Reports {post.score}</p></div>
-                                                    <div className="cdate  c"><p>{post.date}</p></div>
+                                {currentPosts.map((post, ind) => {
+                                    const date = new Date(post.date).toLocaleDateString()
+                                    const time = new Date(post.date).toLocaleTimeString()
+                                    return (
+
+                                        <Container key={post._id} className='bg-slate-200 p-5 rounded-3xl  border-2 border-slate-300 hover:bg-slate-200 hover:cursor-pointer hover:-translate-y-1 duration-1000'>
+
+                                            <div className="card grid grid-cols-1">
+
+                                                <div className="cardImage">
+                                                    <img
+                                                        src={`${imgURL}`}
+                                                        alt="gameImage"
+                                                        className=' rounded-2xl hover:shadow-lg object-cover h-40 w-full'
+                                                    />
                                                 </div>
-                                            </div>
-                                            <div className="clink b">
-                                                <p>Visit Site: <Link to={url}>Website</Link></p>
-                                                <div className="actions">
-                                                    <div className="edit">
-                                                        <IconButton aria-label="edit">
-                                                            <MdEdit onClick={() => editPost(post._id, post.score)} className='editIcon' />
-                                                        </IconButton>
+
+                                                <div className="cardContent mt-3 p-1 text-black text-sm leading-6">
+                                                    <div className="cardScore flex justify-between items-center">
+                                                        <h1>Score: {post.score}</h1>
                                                     </div>
-                                                    <div className="delete">
-                                                        <IconButton aria-label="delete">
-                                                            <DeleteIcon onClick={() => deletePost(post._id, post.score)} color='error' />
-                                                        </IconButton>
+                                                    <div className="cardDate ">
+                                                        <p>Date: {date}</p>
+                                                    </div>
+                                                    <div className="cardDate">
+                                                        <p>Time: {time}</p>
+                                                    </div>
+                                                    <div className="cardPlayer">
+                                                        <p>Player: {post.name}</p>
                                                     </div>
                                                 </div>
+
+                                                {
+                                                    isLoggedIn ?
+                                                        <div className="action flex items-center justify-between mt-3">
+
+                                                            <button className="delete flex bg-red-600 text-white px-2 rounded-md items-center justify-evenly" onClick={() => deletePost(post._id, post.score)}>
+                                                                <p>Delete</p>
+                                                                <IconButton aria-label="delete" >
+                                                                    <MdDelete color='error ' className='text-sm text-white' />
+                                                                </IconButton>
+                                                            </button>
+                                                            <div className="actions flex ">
+                                                                <button onClick={() => editPost(post._id, post.score)} className=" delete flex bg-green-700 text-white px-3 rounded-lg items-center justify-evenly" >
+                                                                    <p >Edit</p>
+                                                                    <IconButton aria-label="edit" >
+                                                                        <MdEdit className='editIcon text-sm text-white disabled' />
+                                                                    </IconButton>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+                                                        :
+                                                        null
+                                                }
                                             </div>
-                                        </div>
 
+                                        </Container>
+                                    )
+                                })}
+                            </div>
+                    }
 
-
-
-                                    </div>
-
-                                </Container>
-                            
-                        )
-                    })
-                }
-
-                {popUp ? null : <p>{errorMessage}</p>}
+                </div>
+                {popUp ? null : <p classnam>{errorMessage}</p>}
 
                 {
-                    isAuth ?
-                        <DeletePost post_id={selectedPostId} onClose={onClose} score={selectScore} deleteWithId={() => deleteWithId(selectedPostId)} />
+                    postDelete ?
+                        <DeletePost post_id={selectedPostId} onClose={onClose} score={selectScore} deleteWithId={() => deleteWithId(selectedPostId,errorMessage)} />
                         : null
                 }
                 {
@@ -233,20 +239,19 @@ function Home() {
 
 
             </div>
-            <div className="pagination box">
+            <div className="bg-cyan-600 flex items-center justify-center py-4 relative z-0">
 
                 <Stack spacing={2}>
                     <Pagination
                         count={Math.ceil(post.length / postsPerPage)} // Total number of pages
                         // count='80'
                         page={currentPage}
-                        onChange={handleChange}
                         color="primary" />
                 </Stack>
             </div>
 
 
-        </>
+        </div>
     )
 }
 

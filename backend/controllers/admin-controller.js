@@ -82,8 +82,6 @@ const register = async (req, res) => {
           "You are not able to create the admin account. Admin already exits",
       });
     } else {
-      const otp = generate_OTP();
-      // const token = await createToken(email, type);
       const hased_password = await hashPassword(password);
 
       sendOTP(email, otp);
@@ -94,13 +92,11 @@ const register = async (req, res) => {
         phone,
         address,
         type,
-        otp,
-        // token,
       });
       return res.status(200).json({
         state: true,
         message: `You are registered successfully. Please verify your account.`,
-        data: { name, email, phone, address, type, otp, token },
+        data: { name, email, phone, address, type },
       });
     }
   } catch (err) {
@@ -115,16 +111,16 @@ const login = async (req, res) => {
     if (!existEmail) {
       return res.status(401).json({
         state: false,
-        msg: `This Email is not correct`,
+        msg: `Your are not registered with this email. Email is not correct`,
       });
     } else {
       const hashed_password = await existEmail.password;
       const result = await comaprePassword(password, hashed_password); // return true of false
-      console.log(existEmail);
       if (result) {
         // create the token
         const type = await existEmail.type;
-        const token = await createToken(email, type);
+        const id = await existEmail._id;
+        const token = await createToken(email, id, type);
         existEmail.token = token;
         await existEmail.save();
 
@@ -132,6 +128,7 @@ const login = async (req, res) => {
           state: true,
           msg: `Login Successfully`,
           data: existEmail,
+          token: token,
         });
       } else {
         return res.status(400).json({
@@ -141,6 +138,16 @@ const login = async (req, res) => {
       }
     }
   } catch (err) {
+    console.log("API Error due to : ", err);
+  }
+};
+
+const getAdmin = async (req, res, next) => {
+  try {
+    const admin = req.admin
+    return res.json({admin})
+  } 
+  catch (err) {
     console.log("API Error due to : ", err);
   }
 };
@@ -191,24 +198,19 @@ const addPost = async (req, res) => {
     const { email, number, date } = req.body;
     const existEmail = await Admin.findOne({ email });
     const score = Number(number);
-    console.log(score);
-    console.log(score);
-    console.log(typeof score);
+
+    const admin = await Admin.findOne({ email });
+    console.log(admin);
+    const name = await admin.name;
+
     if (!existEmail) {
       return res.status(401).json({
         state: false,
         msg: `You are not authorized to add the score`,
-        data: existEmail,
       });
-    } else {
-      if (!existEmail.isVerified) {
-        return res.status(402).json({
-          state: false,
-          msg: `You account is not verified. You are enable to add your score`,
-        });
-      } else {
-        if (score >= 1) {
-          await Post.create({ email, score, date });
+    }   
+      if (score >= 1) {
+          await Post.create({ email, score, date, name });
           return res.status(200).json({
             state: true,
             msg: `Your have scuucessfully added this post`,
@@ -219,8 +221,6 @@ const addPost = async (req, res) => {
             msg: `Score is required. and it should be greater than 0`,
           });
         }
-      }
-    }
   } catch (err) {
     console.log("API Error due to : ", err);
   }
@@ -228,7 +228,7 @@ const addPost = async (req, res) => {
 
 const updatePost = async (req, res) => {
   try {
-    const { email, number } = req.body;
+    const { email, number, date } = req.body;
     const score = Number(number);
     const id = req.params.id;
 
@@ -238,14 +238,8 @@ const updatePost = async (req, res) => {
         state: false,
         msg: `You are not authorized to edit the score `,
       });
-    } else {
-      if (!existEmail.isVerified) {
-        return res.status(401).json({
-          state: false,
-          msg: `Your account is not verified. You are enable to add your score`,
-        });
-      } else {
-        const post = await Post.findOne({ _id: id });
+    }
+    const post = await Post.findOne({ _id: id });
         if (!post) {
           return res
             .status(402)
@@ -258,15 +252,14 @@ const updatePost = async (req, res) => {
             });
           } else {
             post.score = score;
-            await post.save({ score });
+            post.date = date;
+            await post.save();
             return res.status(200).json({
               state: true,
               msg: `Score is updated successfully`,
               data: post,
             });
           }
-        }
-      }
     }
   } catch (err) {
     console.log("API Error due to : ", err);
@@ -286,13 +279,8 @@ const deletePost = async (req, res) => {
         state: false,
         msg: `You are not authorized to delete the score`,
       });
-    } else {
-      if (!existEmail.isVerified) {
-        return res.status(401).json({
-          state: false,
-          msg: `Your account is not verified. You are enable to delete your score`,
-        });
-      } else {
+    } 
+      
         if (!post) {
           return res.status(402).json({
             state: false,
@@ -306,8 +294,6 @@ const deletePost = async (req, res) => {
             msg: `Score is deleted successfully`,
           });
         }
-      }
-    }
   } catch (err) {
     console.log("API Error due to : ", err);
   }
@@ -322,5 +308,5 @@ module.exports = {
   addPost,
   updatePost,
   deletePost,
-
+  getAdmin,
 };

@@ -60,33 +60,33 @@ function Contact() {
 
   }
   return (
-    <Container maxWidth='sm'>
+    <Container maxWidth='sm bg-white  w-full h-screen flex flex-col items-center justify-center'>
 
-      <div className='box contactBox'>
+      <div className='w-full box contactBox bg-slate-100 border-2 border-cyan-500 w-max h-max self-center m-auto p-5 rounded-xl flex flex-col items-center '>
 
-        <div className="heading">
-          <h1>Get in Touch!</h1>
+        <div className="heading m-5">
+          <h1 className='text-3xl auto font-bold '>Get in Touch!</h1>
         </div>
-        <div className="field">
+        <div className="field w-full">
           <InpComp type="email" placeholder="Email Address" name="email" value={email} onChange={(val) => setEmail(val)} />
         </div>
-        <div className="field">
+        <div className="field w-full">
           <InpComp type="text" placeholder="Your Name" name="name" value={name} onChange={(val) => setName(val)} />
         </div>
 
-        <div className="field">
+        <div className=" w-full">
           <InpComp type="text" placeholder="Message" name="message" value={message} onChange={(val) => setMessage(val)} />
         </div>
 
-        <div className="errorMessage">
-          {popUp ? null : <p className='error'>{errorMessage}</p>}
+        <div className="errorMessage w-70">
+          {popUp ? null : <p className='error text-sm text-red-700 text-left mb-3'>{errorMessage}</p>}
         </div>
 
         <div className="successMessage">
-          {popUp ? null : <p className='error success'>{success}</p>}
+          {popUp ? null : <p className='text-sm text-green-700 text-left mb-3'>{success}</p>}
         </div>
-        <div className="field">
-          <BtnCom text={btnStatus ? "PLEASE WAIT..." : "SUBMIT"} onClick={() => submitForm(email, name, message)} varient='contained' isAble={btnStatus ? btnStatus : btnStatus} />
+        <div className="w-full ">
+          <BtnCom text={btnStatus ? "PLEASE WAIT..." : "SUBMIT"} onClick={() => submitForm(email, name, message)} varient='contained' isAble={btnStatus ? btnStatus : btnStatus}  className='w-full text-white  px-5 py-1 border-2 bg-cyan-600 rounded-md hover:bg-cyan-700 font-semibold mb-2'/>
         </div>
       </div>
     </Container>

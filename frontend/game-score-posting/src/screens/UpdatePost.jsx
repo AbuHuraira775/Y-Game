@@ -41,7 +41,8 @@ function UpdatePost({ post_id, onClose, value, edit }) {
     // setConfirm(true)
     // setIsEdit(false)
     let email = localStorage.getItem('email')
-    let data = JSON.stringify({ email, number });
+    let date = new Date().toLocaleString()
+    let data = JSON.stringify({ email, number, date });
 
     let config = {
       method: 'put',
@@ -57,35 +58,30 @@ function UpdatePost({ post_id, onClose, value, edit }) {
       await axios.request(config)
         .then((res) => {
           if (res.status === 200) {
-            setIsEdit(false)
-
-            navigate('/handle')
+            navigate('/')
           }
-          else{
+          else {
             setUpdateErrorMessage('why')
           }
         })
         .catch((err) => {
           if (err.status === 400 || err.status === 401 || err.status === 402 || err.status === 403) {
-            console.log('o',err)
             setUpdateErrorMessage(err.response.data.msg)
           }
-          if(!err){
-
+          if (!err) {
             setUpdateErrorMessage('why')
           }
           // console.log(`update catch ${err}`)
           if (err.message) {
-            // setIsEdit(false)
             setUpdateErrorMessage(err.response.data.msg);
           }
-          else{
+          else {
             setUpdateErrorMessage('Network Error')
           }
         });
     }
     catch (err) {
-      
+
       if (err.message) {
         // setIsEdit(false)
         setUpdateErrorMessage(err.response.data.msg);
@@ -94,43 +90,43 @@ function UpdatePost({ post_id, onClose, value, edit }) {
     }
     finally {
       fetchPost()
+      setIsEdit(false)
       setBtnStatus(false)
+      setIsEdit(false)
+      navigate('/')
     }
   }
   return (
     isEdit ? (
-      <div className='box editBox' >
-
-        <div className="field">
-
+      <div className='w-full h-screen  fixed top-0  m-0 flex items-center justify-center'>
+        <div className="bg-cyan-700 h-max w-max p-5 rounded-2xl "> 
+          <div className="font-medium m-3">
+          <h3 className='text-md font-normal mb-3 text-white'>You can change your game score. That will be visible to all</h3>
+          </div>
+          <div className='flex items-center justify-between w-full mt-5'>
           <InpComp
-            type="number"
-            value={number}
-            onChange={(score) => setScore(score)} // Ensure the correct event target is used
-          />
-        </div>
+              type="number"
+              value={number}
+              onChange={(score) => setScore(score)}
+               // Ensure the correct event target is used
+            />
+          </div>
+          <div className="error">
+            <div className="errorMessage">
+              {!btnStatus ? <p className='error text-sm text-red-700 text-left mb-3'>{updateErrorMessage} </p> : null}
+            </div>
+          </div>
+          <div className='flex items-center justify-between'>
 
-        <div className="error">
-          <div className="errorMessage">
-            {!btnStatus ? <p className='error'>{updateErrorMessage} </p> : null}
+          <div className="field">
+          <BtnCom text='Cancel' onClick={onClose} varient='outlined' color='error' className="bg-white px-5 py-1 border border-slate-500 rounded-md hover:bg-gray-200 font-semibold" />
+          </div>
+          <div className="field">
+            <BtnCom text="Update" onClick={() => onEdit(post_id, number)} varient='contained' isAble={btnStatus ? btnStatus : btnStatus} className='text-white bg-blue-500 px-5 py-1 border-none rounded-md hover:bg-blue-500 font-semibold" '/>
+          </div>
           </div>
         </div>
-        <div className="field">
-
-          <BtnCom onClick={onClose} text="Cancel" varient='outlined' isAble={btnStatus ? btnStatus : btnStatus} />
-
-        </div>
-        <div className="field">
-
-          <BtnCom text="Update" onClick={() => onEdit(post_id, number)} varient='contained' isAble={btnStatus ? btnStatus : btnStatus} />
-        </div>
-
-        {/* {
-          confirm ? <PopUp post_id={post_id} onClose={onClose} score={number}/>: null
-        } */}
       </div>
-
-
     ) : (
       null
     )

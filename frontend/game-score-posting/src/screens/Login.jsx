@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import axios from 'axios';
 import InpComp from '../compopnents/InpComp';
 import BtnCom from '../compopnents/BtnComp';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Fab, TextField } from '@mui/material';
-import { MdAddCircleOutline } from 'react-icons/md';
-import AddIcon from '@mui/icons-material/Add';
-import CloseIcon from '@mui/icons-material/Close';
+import {  Container } from '@mui/material';
+import { useAuth } from '../store/auth';
 
 function Login() {
   const navigate = useNavigate()
@@ -15,6 +13,7 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState('')
   const [popUp, setPopUp] = useState(false)
   const [btnStatus, setBtnStatus] = useState(false)
+  const  {storeTokenInLS} = useAuth()
 
   const url = "http://localhost:5000/api/admin/login";
   const headers = { "Content-Type": "application/json" };
@@ -30,12 +29,10 @@ function Login() {
 
       await axios.post(url, data, { headers: headers })
         .then((res) => {
-          console.log(res);
+          console.log(res.data.token);
           if (res.status === 200) {
-            localStorage.setItem('token', res.data.data.token);
-            localStorage.setItem('session_id', res.data.data._id);
-            localStorage.setItem("isVerified", res.data.data.isVerified);
-            localStorage.setItem("email", res.data.data.email);
+
+            storeTokenInLS(res.data.token, res.data.data.email)
 
             navigate('/');
           }
@@ -49,7 +46,7 @@ function Login() {
           }
         })
         .catch((err) => {
-          // setBtnStatus(true)
+          setBtnStatus(true)
 
           if(err.message === 'Network Error'){
             setErrorMessage(err.message);
@@ -63,6 +60,7 @@ function Login() {
             setErrorMessage('Network error. Please check your internet connection.');
             console.log('Network error: ', err);
           }
+            console.log('Network error: ', err);
         }
 
         );
@@ -90,12 +88,12 @@ function Login() {
       {/* <Box sx={{ bgcolor: '#cfe8fc', height: '100vh' }} >
         </Box> */}
 
-      <Container maxWidth="sm">
-        <div className="box loginDialoge center">
-          <div className="loginHeading">
-            <h1>Welome back to PKS</h1>
+      <Container maxWidth="sm  bg-white w-full h-screen flex flex-col items-center justify-center">
+        <div className="bg-slate-100 border-2 border-cyan-500 w-full box contactBox bg-white w-max h-max self-center m-auto p-5 rounded-xl flex flex-col items-center ">
+          <div className="heading m-5 w-full">
+            <h1 className='text-3xl auto font-bold '>Welome back </h1>
           </div>
-          <div className="field">
+          <div className="field w-full">
             <InpComp
               type="email"
               placeholder="Enter Email"
@@ -105,7 +103,7 @@ function Login() {
             />
           </div>
 
-          <div className="field"> 
+          <div className="field w-full"> 
 
             <InpComp
               type="password"
@@ -116,10 +114,10 @@ function Login() {
             />
           </div>
           <div className="errorMessage">
-            {popUp ? null : <p className='error'>{errorMessage}</p>}
+            {popUp ? null : <p className='error text-sm text-red-700 text-left mb-3'>{errorMessage}</p>}
           </div>
-          <div className="field btn-field">
-            <BtnCom text={btnStatus? "Wait...":"LOGIN"}   onClick={() => login(email, password)} varient="contained"  isAble={btnStatus?btnStatus:btnStatus}/>
+          <div className="w-full field btn-field">
+            <BtnCom text={btnStatus? "Wait...":"LOGIN"}   onClick={() => login(email, password)} varient="contained"  isAble={btnStatus?btnStatus:btnStatus} className='w-full text-white  px-5 py-1 border-2 bg-cyan-600 rounded-md hover:bg-cyan-700 font-semibold mb-2'/>
           </div>
 
         </div>

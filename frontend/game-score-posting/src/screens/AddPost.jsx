@@ -73,34 +73,22 @@ function AddPost() {
 
   return (
 
-    <Container maxWidth='sm'>
+    <Container maxWidth='sm bg-white  w-full h-screen flex  flex-col items-start justify-between'>
 
-      {/* 
-<LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DemoContainer components={['DateCalendar', 'DateCalendar']}>
-        <DemoItem label="Uncontrolled calendar">
-          <DateCalendar defaultValue={dayjs('2022-04-17')} />
-        </DemoItem>
-        <DemoItem label="Controlled calendar">
-          <DateCalendar value={value} onChange={(newValue) => setValue(newValue)} />
-        </DemoItem>
-      </DemoContainer>
-    </LocalizationProvider> */}
-
-      <div className="box addPostBox">
-        <div className="addPostHeading heading">
-          <h1>Enter Number</h1>
-          <p>Enter the number. Number should be greater than 0</p>
+      <div className="box contactBox bg-slate-100 border-2 border-slate-300 w-max h-max self-center m-auto p-5 rounded-xl flex flex-col items-center">
+        <div className="w-full heading my-5 flex flex-col ">
+          <h1 className='w-full text-3xl auto font-bold'>Enter Number</h1>
+          <p className='w-full text-xs mt-1'>Enter the number. Number should be greater than 0</p>
         </div>
-        <div className="addPostsFields">
-          <div className="field">
+        <div className="w-full  addPostsFields flex flex-col items-center">
+          <div className="w-full ">
             <InpComp type="number" placeholder="Enter Score" name="score" value={number} onChange={(number) => setScore(number)} />
           </div>
-          <div className="errorMessage">
-            {popUp ? null : <p className='error'>{errorMessage}</p>}
+          <div className="w-full  errorMessage">
+            {popUp ? null : <p className='error text-xs text-red-700 text-left mb-3'>{errorMessage}</p>}
           </div>
-          <div className="field btnField">
-            <BtnCom text={btnText} onClick={sendPost} endIcon={<SendIcon />} varient="outlined"  isAble={btnStatus?btnStatus:btnStatus} />
+          <div className="w-full  field btnField">
+            <BtnCom text={btnText} onClick={sendPost} endIcon={<SendIcon />} varient="outlined"  isAble={btnStatus?btnStatus:btnStatus} className='w-full text-white  px-5 py-1 border-2 bg-cyan-600 rounded-md hover:bg-cyan-700 font-semibold mb-2'/>
           </div>
         </div>
       </div>
